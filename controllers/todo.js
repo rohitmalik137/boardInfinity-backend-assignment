@@ -1,4 +1,5 @@
-const cron = require('node-cron');
+// const cron = require('node-cron');
+const { validationResult } = require('express-validator');
 
 const Todo = require('../models/todo');
 
@@ -19,6 +20,16 @@ exports.getTasks = (req, res, next) => {
 };
 
 exports.postTask = (req, res, next) => {
+  const errors = validationResult(req);
+  if(!errors.isEmpty()){
+    return res
+      .status(422)
+      .json({
+        message: 'validation failed, min length should be 5 chars', 
+        errors: errors.array()
+      });
+  }
+
   const name = req.body.name;
   const description = req.body.description;
   const creator = req.body.creator;
