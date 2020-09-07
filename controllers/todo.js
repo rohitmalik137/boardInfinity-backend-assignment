@@ -24,12 +24,15 @@ exports.postTask = (req, res, next) => {
   const creator = req.body.creator;
   const duration = req.body.duration;
 
+  let today = new Date();
+  var expiryDate = today.valueOf() + duration * 60 * 1000;
+
   console.log(name, description, creator, duration);
   const todo = new Todo({
     name: name,
     description: description,
     creator: creator,
-    duration: Date(duration),
+    duration: expiryDate,
   });
   todo
     .save()
@@ -38,14 +41,14 @@ exports.postTask = (req, res, next) => {
         message: 'Todo created successfully!',
         todo: result,
       });
-      return result;
+      // return result;
     })
-    .then((result) => {
-      console.log(`${duration}`);
-      cron.schedule(`* * * * * *`, function () {
-        console.log('hahahahhaha');
-      });
-    })
+    // .then((result) => {
+    //   console.log(`${duration}`);
+    //   cron.schedule(`* * * * * *`, function () {
+    //     console.log('hahahahhaha');
+    //   });
+    // })
     .catch((err) => {
       if (!err.statusCode) {
         err.statusCode = 500;
